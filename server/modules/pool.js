@@ -5,7 +5,7 @@ const pool = pg.Pool({
     port: 5432, 
     database: ' weekend-to-do-app',
     max: 10, 
-    idleTimeoutMillis: 30000 
+    idleTimeoutMillis: 30000
 });
 
 pool.on('connect', () => {

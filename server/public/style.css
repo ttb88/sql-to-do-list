@@ -21,15 +21,15 @@ h1 {
 }
 
 #task-input {
-    width: 28%;
+    width: 25%;
 }
 
 #category-input {
-    width: 10%;
+    width: 2%;
 }
 
 #deadline-input {
-    width: 5%;
+    width: 2%;
 }
 
 .btn-outline-secondary {
