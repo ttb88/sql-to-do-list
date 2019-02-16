@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="vendors/jquery.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
     <script src="scripts/client.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css" integrity="sha384-PDle/QlgIONtM1aqA2Qemk5gPOE7wFq8+Em+G/hmo5Iq0CCmYZLv3fVRDJ4MMwEA"
         crossorigin="anonymous">
@@ -14,6 +20,67 @@
 <body>
     <div class="container">
         <h1>Weekend SQL To Do List</h1>
+    </div>
+
+    <div class="container-flex">
+        <div class="row">
+            <div class="input-group" id="task-input-row">
+    
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Task</span>
+                </div>
+                <input type="text" aria-label="name" class="form-control" id="task-input">
+    
+      
+                <div class="dropdown" id="dropdown-category">
+                    <button class="btn btn-secondary dropdown-toggle btn-info" type="button" id="dropdownMenu2" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Category
+                    </button>
+                    <div class="dropdown-menu category-dropdown" aria-labelledby="dropdownMenu2">
+                        <div id="category-dropdown-existing">
+                            <button class="dropdown-item dropdown-existing-button" type="button">Work</button>
+                            <button class="dropdown-item dropdown-existing-button" type="button">School</button>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <input type="text" aria-label="name" class="form-control" id="category-dropdown-input" placeholder="add new">
+                        <button class="dropdown-item btn-success" id="category-dropdown-input-button" type="button">Click to Add</button>
+                    </div>
+                </div>
+                <input type="text" aria-label="name" class="form-control" id="category-input">
+
+                <div class="dropdown" id="dropdown-priority">
+                    <button class="btn btn-secondary dropdown-toggle btn-info" type="button" id="dropdownMenu2" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Priority
+                    </button>
+                    <div class="dropdown-menu category-dropdown" aria-labelledby="dropdownMenu2">
+                            <button class="dropdown-item dropdown-existing-button" type="button">Low</button>
+                            <button class="dropdown-item dropdown-existing-button" type="button">Medium</button>
+                            <button class="dropdown-item dropdown-existing-button" type="button">High</button>
+                    </div>
+                </div>
+                <input type="text" aria-label="name" class="form-control" id="priority-input">
+
+
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Deadline</span>
+                </div>
+                <input type="date" aria-label="type" class="form-control" id="deadline-input">
+    
+
+
+
+
+
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" id="submit-button">Submit</button>
+                </div>
+    
+
+
+            </div>
+        </div>
     </div>
     
 </body>
