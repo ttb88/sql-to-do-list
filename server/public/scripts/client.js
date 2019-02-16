@@ -4,29 +4,60 @@ function onReady() {
     console.log('jquery is running');
     getCategoryDropdown();
     getTasklist();
-    $('#dropdown-category').on('click', '.dropdown-existing-button', dropDownCategorySelection);
-    $('#dropdown-category').on('click', '#category-dropdown-input-button', dropDownAddNewCategory);
+    $('#category-row').on('change', openNewCategoryInput);
+    $('#new-task-modal').on('click', '#close-new-category-button', closeNewCategoryInput);
+    $('#category-row').on('click', '#add-category-button', addNewCategory);
     $('#dropdown-priority').on('click', '.dropdown-existing-button', dropDownPrioritySelection);
-    $('#submit-button').on('click', submitTask);
+    $('.modal-footer').on('click', '#add-task-button', submitTask);
 }
 
 
 
-function dropDownCategorySelection() {
-    console.log('category drop-down existing option chosen');
-    $('#category-input').val($(this).text());
+function openNewCategoryInput() {
+    console.log('add new category option clicked');
+    let categoryAdd = $('#display-add-category:selected').text();
+    if (categoryAdd == 'ADD NEW') {
+        $('#category-row').empty();
+        $('#category-row').append(`
+        <div class="form-group col-md-12">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <button class="btn btn-outline-secondary" id="add-category-button" type="button">Add New Category</button>
+                </div>
+                <input type="text" id="category-input" class="form-control" placeholder="" aria-label=""
+                    aria-describedby="basic-addon1">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" id="close-new-category-button" type="button">X</button>
+                </div>
+            </div>
+        </div>`);
+        return;
+    } 
 }
 
 
+function closeNewCategoryInput() {
+    $('#category-row').empty();
+    $('#category-row').append(`
+        <div class="form-group col-md-8">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Category</span>
+                </div>
+                <select id="category-dropdown" class="custom-select form-control">
+                </select>
+            </div>
+        </div>`);
+    getCategoryDropdown();
+}
 
-function dropDownAddNewCategory() {
+
+function addNewCategory() {
     console.log('add new category drop-down button clicked');
-    let newCategory = $('#category-dropdown-input').val();
+    let newCategory = $('#category-input').val();
    
     if (newCategory) {
-
         $('#category-input').val(newCategory);
-
         $.ajax({
             method: 'POST',
             url: '/category',
@@ -34,8 +65,8 @@ function dropDownAddNewCategory() {
                 category: newCategory
             }
         }).then(function () {
-            getCategoryDropdown();
-            $('#category-dropdown-input').val('');
+            $('#category-input').val('');
+            closeNewCategoryInput();
         })     
     }
 }
@@ -47,12 +78,15 @@ function getCategoryDropdown() {
         method: 'GET',
         url: '/category'
     }).then(function (response) {
-        $('#category-dropdown-existing').empty();
+        $('#category-dropdown').empty();
+        $('#category-dropdown').append(`
+        <option selected>Choose...</option>`)
         response.forEach(function (category) {
-            $('#category-dropdown-existing').append(`
-            <button class="dropdown-item dropdown-existing-button" type="button">${category.category}</button>
-            `)  
-        }) 
+            console.log(category.category);
+            $('#category-dropdown').append(`<option value="${category.id}">${category.category}</option>`);
+        })
+        $('#category-dropdown').append(`
+        <option id="display-add-category">ADD NEW</option>`);
     })
  }
 
@@ -71,11 +105,12 @@ function submitTask() {
         url: '/task',
         data: {
             task: $('#task-input').val(),
-            category: $('#category-input').val(),
-            priority: $('#priority-input').val(),
+            category: $('#category-dropdown option:selected').text(),
+            priority: $('#priority-dropdown option:selected').text(),
             deadline: $('#deadline-input').val(),
             date_created: '10/15/1978',
-            completed: '0'
+            completed: '0',
+            note: $('#note-input').val()
         }
     }).then(function () {
         $('input').val('');
@@ -92,11 +127,11 @@ function getTasklist() {
         response.forEach(function (task) {
             $('#tasklist-body').append(`
             <tr>
+            <td></td>
             <td>${task.task}</td>
             <td>${task.category}</td>
             <td>${task.priority}</td>
             <td>${task.deadline}</td>
-            <td class="center-cell"><input value="${task.completed}"/></td>
             <td class="center-cell"><button type="button" class="btn btn-info delete-button" data-id="${task.id}">Delete</button></td>
             </tr>
             `)
