@@ -16,12 +16,15 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css" integrity="sha384-PDle/QlgIONtM1aqA2Qemk5gPOE7wFq8+Em+G/hmo5Iq0CCmYZLv3fVRDJ4MMwEA"
         crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Comfortaa:400,700|Roboto:400,700" rel="stylesheet">
     <title>Weekend SQL To Do List</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Weekend SQL To Do List</h1>
-    </div>
+    <header>
+        <div class="jumbotron">
+            <h1>Weekend SQL To Do List</h1>
+        </div>
+    </header>
 
     <div class="container-flex">
         <div class="row">
@@ -32,7 +35,6 @@
                 </div>
                 <input type="text" aria-label="name" class="form-control" id="task-input">
     
-      
                 <div class="dropdown" id="dropdown-category">
                     <button class="btn btn-secondary dropdown-toggle btn-info" type="button" id="dropdownMenu2" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
@@ -64,24 +66,33 @@
                 </div>
                 <input type="text" aria-label="name" class="form-control" id="priority-input">
 
-
                 <div class="input-group-prepend">
                     <span class="input-group-text">Deadline</span>
                 </div>
                 <input type="date" aria-label="type" class="form-control" id="deadline-input">
-    
-
-
-
-
 
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="button" id="submit-button">Submit</button>
                 </div>
-    
-
-
             </div>
+        </div>
+    </div>
+
+    <div class="container-flex">
+        <div class="row">
+            <table class="table table-bordered table-hover table-striped" id="tasklist-table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Task</th>
+                        <th scope="col">Category</th>
+                        <th class="rating-column" scope="col">Priority</th>
+                        <th class="button-column" scope="col">Deadline</th>
+                        <th class="button-column" scope="col">Completed</th>
+                        <th class="button-column" scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="tasklist-body"></tbody>
+            </table>
         </div>
     </div>
     

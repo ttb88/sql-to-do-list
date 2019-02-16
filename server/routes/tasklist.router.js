@@ -3,14 +3,25 @@ const router = express.Router();
 const pool = require('../modules/pool.js');
 
 router.get('/', (req, res) => {
-    pool.query(`SELECT * FROM "restaurants" ORDER BY "id"`)
+    pool.query(`SELECT * FROM "task" ORDER BY "priority"`)
         .then((result) => {
-            restaurants = result.rows;
-            res.send(restaurants);
+            tasks = result.rows;
+            res.send(tasks);
         }).catch((error) => {
-            console.log('errors with restaurant select', error);
+            console.log('errors with task select', error);
             res.sendStatus(500);
         })
+})
+
+router.post('/', (req, res) => {
+    console.log('hit the task POST route', req.body);
+    
+    pool.query(`INSERT INTO "task" (task, category, priority, deadline, date_created, completed) VALUES ($1,$2,$3,$4,$5,$6);`, [req.body.task, req.body.category, req.body.priority, req.body.deadline, req.body.date_created, req.body.completed]).then(() => {
+        res.sendStatus(201);
+    }).catch((error) => {
+        console.log('errors with category insert', error);
+        res.sendStatus(500);
+    })
 })
 
 
