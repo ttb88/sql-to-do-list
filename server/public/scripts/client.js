@@ -12,6 +12,7 @@ function onReady() {
         clearForm();   
     })
     $('table').on('click', '.checkbox', checkboxChecked);
+    $('table').on('click', '.delete-button', deleteRow);
 }
 
 let currentDate = new Date().getMonth() + 1 + '/' + new Date().getDate() + '/' + new Date().getFullYear()
@@ -102,9 +103,10 @@ function submitTask() {
             task: $('#task-input').val(),
             category: $('#category-dropdown option:selected').text(),
             priority: $('#priority-dropdown option:selected').text(),
+            priority_id: $('#priority-dropdown option:selected').val(),
             deadline: $('#deadline-input').val(),
             date_created: currentDate,
-            completed: '0',
+            completed: '',
             note: $('#note-input').val()
         }
     }).then(function () {
@@ -123,12 +125,12 @@ function getTasklist() {
         $('#tasklist-body').empty();
         response.forEach(function (task) {
                 $('#tasklist-body').append(`
-                <tr class="d-flex ${setRowColor(task)}">
-                <td class="col-1"><input type="checkbox" class="checkbox" data-id="${task.id}"aria-label="Checkbox for following text input" ${task.completed}></td>
+                <tr class="d-flex ${verifyPriority(task).color}">
+                <td class="col-1"><input type="checkbox" class="checkbox" data-id="${task.id}" aria-label="Checkbox for following text input" ${task.completed}></td>
                 <td class="col-4">${task.task}</td>
                 <td class="col-2">${task.category}</td>
-                <td class="col-2">${task.priority}</td>
-                <td class="col-2">${new Date(task.deadline).getMonth() + 1}/${new Date(task.deadline).getDate()}</td>
+                <td class="col-2 priority-row">${task.priority}</td>
+                <td class="col-2">${formatDate(task.deadline)}</td>
                 <td class="col-1 last-cell"${addDeleteButton(task)}></td>
                 </tr>
                 `)
@@ -138,8 +140,7 @@ function getTasklist() {
 
 function checkboxChecked() {
     console.log('checkbox clicked');
-    console.log('is this the curret row', $(this).closest('tr'));
-    
+ 
     if (this.checked == true) {
         console.log('checkbox is checked');
         let addDelete = $(this).closest('tr').find('.last-cell').replaceWith(function () {
@@ -150,7 +151,8 @@ function checkboxChecked() {
             method: 'PUT',
             url: '/task/' + $(this).data().id,
             data: {
-                completed: 'checked'
+                completed: 'checked',
+                priority_id: '5'
             }
         }).then(function () {
             addDelete;
@@ -162,11 +164,14 @@ function checkboxChecked() {
     }
     else {
         console.log('checkbox is unchecked');
+        let priorityLabel = $(this).closest('tr').find('.priority-row').text()
+        
         $.ajax({
             method: 'PUT',
             url: '/task/' + $(this).data().id,
             data: {
-                completed: ''
+                completed: '',
+                priority_id: verifyPriority(0, priorityLabel).value
             }
         }).then(function () {
             getTasklist();
@@ -174,38 +179,61 @@ function checkboxChecked() {
     }
 }
 
-function setRowColor(task) {
-    console.log('set row color function hit',task);
-    
-    if (task.completed == 'checked') {
+
+
+function deleteRow() {
+    console.log('delete button clicked');
+    $.ajax({
+        method: 'DELETE',
+        url: '/task/' + $(this).data().id
+    }).then(function () {
+        getTasklist();
+    })
+}
+
+
+
+function verifyPriority(task, priority) {
+  
+    if (task.completed || priority == 'checked') {
         return 'bg-light text-muted';
     }
-    else if (task.priority == 'Today') {
-        return 'table-danger'
+    else if (task.priority == 'Today' || priority == 'Today') {
+        return {color: 'table-danger', value: 1}
     }
-    else if (task.priority == 'Tomorrow') {
-        return 'table-warning'
+    else if (task.priority == 'Tomorrow' || priority == 'Tomorrow') {
+        return {color: 'table-warning', value: 2}
     }
-    else if (task.priority == 'Soon') {
-        return 'table-success'
+    else if (task.priority == 'Soon' || priority  == 'Soon') {
+        return {color: 'table-success', value: 3 }
     }
-    else if (task.priority == 'Eventually') {
-        return 'table-info'
+    else if (task.priority == 'Eventually' || priority  == 'Eventually') {
+        return {color: 'table-info', value: 4 }
     }
        
 }
 
 function addDeleteButton(task) {
-    let deleteButton = ' center-cell"><button type="button" class="btn btn-outline-secondary btn-sm btn-block delete-button" data-id="${task.id}">Delete</button'
+    let deleteButton = ` center-cell"><button type="button" class="btn btn-outline-secondary btn-sm btn-block delete-button" data-id="${task.id}">Delete</button`
     if (task.completed == 'checked') {
         return deleteButton;
     }
 }
 
-
+function formatDate(task) {
+    if (task == '') {
+        return ''
+    }
+    else {
+        let formattedDate = new Date(task).getMonth() + 1 + '/' + new Date(task).getDate()
+        return formattedDate
+    }  
+}
 
 function clearForm() {
     $('input').val('');
     $("#priority-dropdown option:eq(0)").prop("selected", true);
     $("#category-dropdown option:eq(0)").prop("selected", true);
 }
+
+
