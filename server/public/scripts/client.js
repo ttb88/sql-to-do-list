@@ -4,15 +4,18 @@ function onReady() {
     console.log('jquery is running');
     closeNewCategoryInput();
     getTasklist();
+    $('#open-modal-button').on('click', resetAddModalForm);
     $('#category-row').on('change', openNewCategoryInput);
-    $('#new-task-modal').on('click', '#close-new-category-button', closeNewCategoryInput);
+    $('#modal-form').on('click', '#close-new-category-button', closeNewCategoryInput);
     $('#category-row').on('click', '#add-category-button', addNewCategory);
-    $('.modal-footer').on('click', '#add-task-button', submitTask);
+    $('#modal-form').on('click', '#add-task-button', submitTask);
+    $('#modal-form').on('click', '#update-task-button', submitUpdate);
     $('#close-modal-button').on('click', function () {
         clearForm();   
     })
     $('table').on('click', '.checkbox', checkboxChecked);
     $('table').on('click', '.delete-button', deleteRow);
+    $('table').on('click', '.edit-button', editRow);
 }
 
 let currentDate = new Date().getMonth() + 1 + '/' + new Date().getDate() + '/' + new Date().getFullYear()
@@ -82,13 +85,11 @@ function getCategoryDropdown() {
         url: '/category'
     }).then(function (response) {
         $('#category-dropdown').empty();
-        $('#category-dropdown').append(`
-        <option selected>Choose...</option>`)
+        $('#category-dropdown').append(`<option selected id="choose-option">Choose...</option>`)
         response.forEach(function (category) {
-            $('#category-dropdown').append(`<option value="${category.id}">${category.category}</option>`);
-            })
-            $('#category-dropdown').append(`
-            <option id="display-add-category">ADD NEW</option>`);
+            $('#category-dropdown').append(`<option value="${category.category}">${category.category}</option>`);
+        })
+        $('#category-dropdown').append(`<option id="display-add-category">ADD NEW</option>`);
     })
  }
 
@@ -103,7 +104,7 @@ function submitTask() {
             task: $('#task-input').val(),
             category: $('#category-dropdown option:selected').text(),
             priority: $('#priority-dropdown option:selected').text(),
-            priority_id: $('#priority-dropdown option:selected').val(),
+            priority_id: $('#priority-dropdown option:selected').data().rank,
             deadline: $('#deadline-input').val(),
             date_created: currentDate,
             completed: '',
@@ -113,6 +114,28 @@ function submitTask() {
         clearForm(); 
         getTasklist();
     })
+}
+
+function submitUpdate() {
+    console.log('submit update button clicked');
+    $.ajax({
+        method: 'PUT',
+        url: '/task/update/' + $(this).data().id,
+        data: {
+            task: $('#task-input').val(),
+            category: $('#category-dropdown option:selected').text(),
+            priority: $('#priority-dropdown option:selected').text(),
+            priority_id: $('#priority-dropdown option:selected').data().rank,
+            deadline: $('#deadline-input').val(),
+            date_created: currentDate,
+            completed: '',
+            note: $('#note-input').val()
+        }
+    }).then(function () {
+        clearForm();
+        getTasklist();
+    })
+    
 }
 
 
@@ -127,10 +150,11 @@ function getTasklist() {
                 $('#tasklist-body').append(`
                 <tr class="d-flex ${verifyPriority(task).color}">
                 <td class="col-1"><input type="checkbox" class="checkbox" data-id="${task.id}" aria-label="Checkbox for following text input" ${task.completed}></td>
-                <td class="col-4">${task.task}</td>
+                <td class="col-3">${task.task}</td>
                 <td class="col-2">${task.category}</td>
-                <td class="col-2 priority-row">${task.priority}</td>
-                <td class="col-2">${formatDate(task.deadline)}</td>
+                <td class="col-1 priority-row">${task.priority}</td>
+                <td class="col-1">${formatDate(task.deadline)}</td>
+                <td class="col-3">${task.note}</td>
                 <td class="col-1 last-cell"${addDeleteButton(task)}></td>
                 </tr>
                 `)
@@ -144,7 +168,7 @@ function checkboxChecked() {
     if (this.checked == true) {
         console.log('checkbox is checked');
         let addDelete = $(this).closest('tr').find('.last-cell').replaceWith(function () {
-            return $('<td class="col-1 last-cell"><button type="button" class="btn btn-outline-secondary btn-sm btn-block delete-button">Delete</button></td>').hide().fadeIn(700)
+            return $('<td class="col-1 last-cell"><button type="button" class="btn btn-outline-secondary btn-sm btn-block delete-button">Delete</button></td>').hide().fadeIn(500)
         });
        
         $.ajax({
@@ -159,7 +183,7 @@ function checkboxChecked() {
             setTimeout(
                 function () {
                 getTasklist();
-                }, 900);
+                }, 500);
         })
     }
     else {
@@ -171,7 +195,7 @@ function checkboxChecked() {
             url: '/task/' + $(this).data().id,
             data: {
                 completed: '',
-                priority_id: verifyPriority(0, priorityLabel).value
+                priority_id: verifyPriority(0, priorityLabel).rank
             }
         }).then(function () {
             getTasklist();
@@ -183,40 +207,52 @@ function checkboxChecked() {
 
 function deleteRow() {
     console.log('delete button clicked');
+    $(this).closest('tr').fadeOut(1000);
     $.ajax({
         method: 'DELETE',
         url: '/task/' + $(this).data().id
     }).then(function () {
-        getTasklist();
+        setTimeout(
+            function () {
+                getTasklist();
+            }, 800);
     })
 }
 
 
 
+
+
 function verifyPriority(task, priority) {
   
-    if (task.completed || priority == 'checked') {
-        return 'bg-light text-muted';
+    if (task.completed == 'checked') {
+        console.log('box is checked color is being returned');
+        
+        return {color: 'bg-light text-muted'}
     }
     else if (task.priority == 'Today' || priority == 'Today') {
-        return {color: 'table-danger', value: 1}
+        return {color: 'table-danger', rank: 1}
     }
     else if (task.priority == 'Tomorrow' || priority == 'Tomorrow') {
-        return {color: 'table-warning', value: 2}
+        return {color: 'table-warning', rank: 2}
     }
     else if (task.priority == 'Soon' || priority  == 'Soon') {
-        return {color: 'table-success', value: 3 }
+        return {color: 'table-success', rank: 3 }
     }
     else if (task.priority == 'Eventually' || priority  == 'Eventually') {
-        return {color: 'table-info', value: 4 }
+        return {color: 'table-info', rank: 4 }
     }
        
 }
 
 function addDeleteButton(task) {
     let deleteButton = ` center-cell"><button type="button" class="btn btn-outline-secondary btn-sm btn-block delete-button" data-id="${task.id}">Delete</button`
+    let editButton = ` center-cell"><button type="button" class="btn btn-outline-secondary btn-sm btn-block edit-button" data-id="${task.id}" data-toggle="modal" data-target=".bd-example-modal-lg">Edit/Info</button`
     if (task.completed == 'checked') {
         return deleteButton;
+    }
+    else {
+        return editButton;
     }
 }
 
@@ -237,3 +273,47 @@ function clearForm() {
 }
 
 
+function editRow() {
+    let selectedID= $(this).data().id
+
+    $.ajax({
+        method: 'GET',
+        url: '/task'
+    }).then(function (response) {
+        // $('#tasklist-body').empty();
+        let selectedRowObject;
+        response.forEach(function (task, i) {
+            if (selectedID == task.id) {
+                selectedRowObject = task;
+            }
+        })
+        console.log('selected object', selectedRowObject);
+        appendEditForm(selectedRowObject);
+    })
+}
+
+function resetAddModalForm() {
+    $('.modal-title').text('Create New Task');
+    $('.modal-footer').replaceWith(`
+     <div class="modal-footer">
+        <button type="button" class="btn btn-success btn-lg" id="add-task-button" data-dismiss="modal">Add Task</button>
+    </div>
+    `);  
+}
+
+
+function appendEditForm(selectedRowObject) {
+    console.log(selectedRowObject.priority);
+    
+    $('.modal-title').text('Edit Existing Task');
+    $('#task-input').val(selectedRowObject.task);
+    $('#category-dropdown').val(selectedRowObject.category);
+    $('#priority-dropdown').val(selectedRowObject.priority);
+    $('#note-input').val(selectedRowObject.note);
+    $('#deadline-input').val(selectedRowObject.deadline);
+    $('.modal-footer').replaceWith(`
+     <div class="modal-footer">
+        <button type="button" class="btn btn-success btn-lg" id="update-task-button" data-dismiss="modal" data-id="${selectedRowObject.id}">Update Task</button>
+    </div>
+    `);   
+}

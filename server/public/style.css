@@ -48,10 +48,10 @@ h1 {
     border: none;
 }
 
-/* .form-control,
-.btn {
+.form-control,
+form .btn {
     font-size: 1.2rem;
-} */
+}
 
 .form-group {
     margin-bottom: 0;
@@ -75,6 +75,10 @@ table {
     margin-top: 40px;
 }
 
+/* #tasklist-body {
+    background-color: #d8dfdf8c;
+} */
+
 .table td:first-child {
     text-align: center;
 } 
@@ -84,13 +88,13 @@ th:first-of-type {
 }
 
 input[type="checkbox"]{
-  width: 18px; 
-  height: 18px; 
+  width: 20px; 
+  height: 20px; 
 }
 
-.checked-row {
+/* .checked-row {
     background-color: #575757;
-}
+} */
 
 thead {
     font-size: 1rem;

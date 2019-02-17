@@ -26,7 +26,7 @@
         <div class="jumbotron">
             <h1>Weekend SQL To Do List</h1>
             <div class="row">
-                <button type="button" class="btn btn-success btn-lg add-task-butto" id="open-modal-button" data-toggle="modal"
+                <button type="button" class="btn btn-success btn-lg add-task-button" id="open-modal-button" data-toggle="modal"
                     data-target=".bd-example-modal-lg">+ Add New Task</button>
             </div>
         </div>
@@ -39,7 +39,7 @@
 
 
     <!-- Modal -->
-    <div class="modal fade bd-example-modal-lg" id="new-task-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal fade bd-example-modal-lg" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -49,7 +49,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-
                     <form>
                         <div class="form-group">
                             <div class="input-group mb-3">
@@ -80,10 +79,10 @@
                                     </div>
                                     <select id="priority-dropdown" class="custom-select form-control">
                                         <option selected>Choose...</option>
-                                        <option value="1">Today</option>
-                                        <option value="2">Tomorrow</option>
-                                        <option value="3">Soon</option>
-                                        <option value="4">Eventually</option>
+                                        <option data-rank="1" value="Today">Today</option>
+                                        <option data-rank="2" value="Tomorrow">Tomorrow</option>
+                                        <option data-rank="3" value="Soon">Soon</option>
+                                        <option data-rank="4" value="Eventually">Eventually</option>
                                     </select>
                                 </div>
                             </div>
@@ -111,7 +110,7 @@
                 </div>
                 <div class="modal-footer">
                     <!-- <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button> -->
-                    <button type="button" class="btn btn-success btn-lg" id="add-task-button" data-dismiss="modal">Add Task</button>
+                        <button type="button" class="btn btn-success btn-lg" id="add-task-button" data-dismiss="modal">Add Task</button>
                 </div>
             </div>
         </div>
@@ -120,14 +119,15 @@
     <!-- Table -->
     <div class="container-flex">
         <div class="row">
-            <table class="table table-hover table-striped" id="tasklist-table">
+            <table class="table table-hover" id="tasklist-table">
                 <thead>
                     <tr class="d-flex">
                         <th class="col-1" scope="col">&check;</th>
-                        <th class="col-4" scope="col">Task</th>
+                        <th class="col-3" scope="col">Task</th>
                         <th class="col-2" scope="col">Category</th>
-                        <th class="col-2 rating-column" scope="col">Priority</th>
-                        <th class="col-2 button-column" scope="col">Deadline</th>
+                        <th class="col-1 rating-column" scope="col">Priority</th>
+                        <th class="col-1 button-column" scope="col">Deadline</th>
+                        <th class="col-3 button-column" scope="col">Notes</th>
                         <th class="col-1 button-column" scope="col"></th>
                     </tr>
                 </thead>
@@ -135,6 +135,93 @@
             </table>
         </div>
     </div>
+    
+
+
+<!-- 
+    <div id="modal-edit-form">
+        <div class="modal fade bd-example-modal-lg" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="exampleModalLongTitle">Edit Existing Task</h3>
+                        <button type="button" class="close" id="close-modal-button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Task</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="task-edit-input" placeholder="" aria-label=""
+                                        aria-describedby="basic-addon1">
+                                </div>
+                            </div>
+        
+                            <div class="form-row" id="category-row">
+                                <div class="form-group col-md-6">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Category</span>
+                                        </div>
+                                        <select id="category-dropdown" class="custom-select form-control">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Priority</span>
+                                        </div>
+                                        <select id="priority-dropdown" class="custom-select form-control">
+                                            <option selected>Choose...</option>
+                                            <option value="1">Today</option>
+                                            <option value="2">Tomorrow</option>
+                                            <option value="3">Soon</option>
+                                            <option value="4">Eventually</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Deadline</span>
+                                        </div>
+                                        <input type="date" class="form-control" id="deadline-input" placeholder="" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="form-group">
+                                <div class="input-group mb-3" id="last-form-row">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Note</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="note-input" placeholder="" aria-label=""
+                                        aria-describedby="basic-addon1">
+                                </div>
+                            </div>
+        
+        
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button> 
+                        <button type="button" class="btn btn-success btn-lg" id="add-task-button" data-dismiss="modal">Add Task</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div> -->
 
 </body>
 
