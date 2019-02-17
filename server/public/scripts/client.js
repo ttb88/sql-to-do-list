@@ -7,11 +7,11 @@ function onReady() {
     $('#category-row').on('change', openNewCategoryInput);
     $('#new-task-modal').on('click', '#close-new-category-button', closeNewCategoryInput);
     $('#category-row').on('click', '#add-category-button', addNewCategory);
-    // $('#dropdown-priority').on('click', '.dropdown-existing-button', dropDownPrioritySelection);
     $('.modal-footer').on('click', '#add-task-button', submitTask);
     $('#close-modal-button').on('click', function () {
         clearForm();   
     })
+    $('table').on('click', '.checkbox', checkboxChecked);
 }
 
 let currentDate = new Date().getMonth() + 1 + '/' + new Date().getDate() + '/' + new Date().getFullYear()
@@ -93,13 +93,6 @@ function getCategoryDropdown() {
 
 
 
-// function dropDownPrioritySelection() {
-//     console.log('priority drop-down option chosen');
-//     $('#priority-input').val($(this).text());
-// }
-
-
-
 function submitTask() {
     console.log('submit button clicked');
     $.ajax({
@@ -129,19 +122,87 @@ function getTasklist() {
     }).then(function (response) {
         $('#tasklist-body').empty();
         response.forEach(function (task) {
-            $('#tasklist-body').append(`
-            <tr>
-            <td></td>
-            <td>${task.task}</td>
-            <td>${task.category}</td>
-            <td>${task.priority}</td>
-            <td>${task.deadline}</td>
-            <td class="center-cell"><button type="button" class="btn btn-info delete-button" data-id="${task.id}">Delete</button></td>
-            </tr>
-            `)
+                $('#tasklist-body').append(`
+                <tr class="d-flex ${setRowColor(task)}">
+                <td class="col-1"><input type="checkbox" class="checkbox" data-id="${task.id}"aria-label="Checkbox for following text input" ${task.completed}></td>
+                <td class="col-4">${task.task}</td>
+                <td class="col-2">${task.category}</td>
+                <td class="col-2">${task.priority}</td>
+                <td class="col-2">${new Date(task.deadline).getMonth() + 1}/${new Date(task.deadline).getDate()}</td>
+                <td class="col-1 last-cell"${addDeleteButton(task)}></td>
+                </tr>
+                `)
+            })
         })
-    })
 }
+
+function checkboxChecked() {
+    console.log('checkbox clicked');
+    console.log('is this the curret row', $(this).closest('tr'));
+    
+    if (this.checked == true) {
+        console.log('checkbox is checked');
+        let addDelete = $(this).closest('tr').find('.last-cell').replaceWith(function () {
+            return $('<td class="col-1 last-cell"><button type="button" class="btn btn-outline-secondary btn-sm btn-block delete-button">Delete</button></td>').hide().fadeIn(700)
+        });
+       
+        $.ajax({
+            method: 'PUT',
+            url: '/task/' + $(this).data().id,
+            data: {
+                completed: 'checked'
+            }
+        }).then(function () {
+            addDelete;
+            setTimeout(
+                function () {
+                getTasklist();
+                }, 900);
+        })
+    }
+    else {
+        console.log('checkbox is unchecked');
+        $.ajax({
+            method: 'PUT',
+            url: '/task/' + $(this).data().id,
+            data: {
+                completed: ''
+            }
+        }).then(function () {
+            getTasklist();
+        })
+    }
+}
+
+function setRowColor(task) {
+    console.log('set row color function hit',task);
+    
+    if (task.completed == 'checked') {
+        return 'bg-light text-muted';
+    }
+    else if (task.priority == 'Today') {
+        return 'table-danger'
+    }
+    else if (task.priority == 'Tomorrow') {
+        return 'table-warning'
+    }
+    else if (task.priority == 'Soon') {
+        return 'table-success'
+    }
+    else if (task.priority == 'Eventually') {
+        return 'table-info'
+    }
+       
+}
+
+function addDeleteButton(task) {
+    let deleteButton = ' center-cell"><button type="button" class="btn btn-outline-secondary btn-sm btn-block delete-button" data-id="${task.id}">Delete</button'
+    if (task.completed == 'checked') {
+        return deleteButton;
+    }
+}
+
+
 
 function clearForm() {
     $('input').val('');

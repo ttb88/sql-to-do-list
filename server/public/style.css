@@ -3,7 +3,7 @@ body {
 }
 
 .container-flex {
-    margin: 0 2em;
+    margin: 0 40px;
 }
 
 .jumbotron {
@@ -48,10 +48,10 @@ h1 {
     border: none;
 }
 
-.form-control,
+/* .form-control,
 .btn {
     font-size: 1.2rem;
-}
+} */
 
 .form-group {
     margin-bottom: 0;
@@ -66,29 +66,6 @@ h1 {
 }
 
 
-
-/* #task-input {
-    width: 30%;
-}
-
-#category-input {
-    width: 0%;
-}
-
-#priority-input {
-    width: 0%;
-}
-
-#deadline-input {
-    width: 0%;
-}  */
-
-/* .btn-outline-secondary {
-    color: #17a2b8;
-    border-color: #17a2b8;
-} */
-
-
 #submit-button {
     padding: .375rem 1.75rem;
 
@@ -96,4 +73,26 @@ h1 {
 
 table {
     margin-top: 40px;
+}
+
+.table td:first-child {
+    text-align: center;
+} 
+
+th:first-of-type {
+    text-align: center;
+}
+
+input[type="checkbox"]{
+  width: 18px; 
+  height: 18px; 
+}
+
+.checked-row {
+    background-color: #575757;
+}
+
+thead {
+    font-size: 1rem;
+    text-transform: uppercase;
 }

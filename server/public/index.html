@@ -43,7 +43,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLongTitle">New Task</h3>
+                    <h3 class="modal-title" id="exampleModalLongTitle">Create New Task</h3>
                     <button type="button" class="close" id="close-modal-button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -80,10 +80,10 @@
                                     </div>
                                     <select id="priority-dropdown" class="custom-select form-control">
                                         <option selected>Choose...</option>
-                                        <option value="1">Do Now</option>
-                                        <option value="2">Do Tomorrow</option>
-                                        <option value="3">Do Soon</option>
-                                        <option value="4">Do Eventually</option>
+                                        <option value="1">Today</option>
+                                        <option value="2">Tomorrow</option>
+                                        <option value="3">Soon</option>
+                                        <option value="4">Eventually</option>
                                     </select>
                                 </div>
                             </div>
@@ -120,15 +120,15 @@
     <!-- Table -->
     <div class="container-flex">
         <div class="row">
-            <table class="table table-bordered table-hover table-striped" id="tasklist-table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">/</th>
-                        <th scope="col">Task</th>
-                        <th scope="col">Category</th>
-                        <th class="rating-column" scope="col">Priority</th>
-                        <th class="button-column" scope="col">Deadline</th>
-                        <th class="button-column" scope="col">Delete</th>
+            <table class="table table-hover table-striped" id="tasklist-table">
+                <thead>
+                    <tr class="d-flex">
+                        <th class="col-1" scope="col">&check;</th>
+                        <th class="col-4" scope="col">Task</th>
+                        <th class="col-2" scope="col">Category</th>
+                        <th class="col-2 rating-column" scope="col">Priority</th>
+                        <th class="col-2 button-column" scope="col">Deadline</th>
+                        <th class="col-1 button-column" scope="col"></th>
                     </tr>
                 </thead>
                 <tbody id="tasklist-body"></tbody>
