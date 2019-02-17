@@ -12,13 +12,13 @@ function onReady() {
     $('#modal-form').on('click', '#update-task-button', submitUpdate);
     $('#close-modal-button').on('click', function () {
         clearForm();   
-    })
+    });
     $('table').on('click', '.checkbox', checkboxChecked);
     $('table').on('click', '.delete-button', deleteRow);
     $('table').on('click', '.edit-button', editRow);
 }
 
-let currentDate = new Date().getMonth() + 1 + '/' + new Date().getDate() + '/' + new Date().getFullYear()
+let currentDate = new Date().getMonth() + 1 + '/' + new Date().getDate() + '/' + new Date().getFullYear();
 
 function openNewCategoryInput() {
     console.log('add new category option clicked');
@@ -67,13 +67,15 @@ function addNewCategory() {
         $('#category-input').val(newCategory);
         $.ajax({
             method: 'POST',
-            url: '/category',
+            url: '/categor',
             data: {
                 category: newCategory
             }
         }).then(function () {
             closeNewCategoryInput();
-        })     
+        }).catch(function () {
+            alert('New category could not be added');
+        });
     }
 }
 
@@ -85,12 +87,14 @@ function getCategoryDropdown() {
         url: '/category'
     }).then(function (response) {
         $('#category-dropdown').empty();
-        $('#category-dropdown').append(`<option selected id="choose-option">Choose...</option>`)
+        $('#category-dropdown').append(`<option selected id="choose-option">Choose...</option>`);
         response.forEach(function (category) {
             $('#category-dropdown').append(`<option value="${category.category}">${category.category}</option>`);
         })
         $('#category-dropdown').append(`<option id="display-add-category">ADD NEW</option>`);
-    })
+    }).catch(function () {
+        alert ('Category content was not recieved');
+    });
  }
 
 
@@ -113,7 +117,9 @@ function submitTask() {
     }).then(function () {
         clearForm(); 
         getTasklist();
-    })
+    }).catch(function () {
+        alert('New task could not be added');
+    });
 }
 
 function submitUpdate() {
@@ -134,8 +140,9 @@ function submitUpdate() {
     }).then(function () {
         clearForm();
         getTasklist();
-    })
-    
+    }).catch(function () {
+        alert('Task update could not be completed');
+    });
 }
 
 
@@ -157,9 +164,11 @@ function getTasklist() {
                 <td class="col-3">${task.note}</td>
                 <td class="col-1 last-cell"${addDeleteButton(task)}></td>
                 </tr>
-                `)
-            })
-        })
+                `);
+            });
+    }).catch(function () {
+        alert('Task-list could not be received');
+    });
 }
 
 function checkboxChecked() {
@@ -167,6 +176,7 @@ function checkboxChecked() {
  
     if (this.checked == true) {
         console.log('checkbox is checked');
+        
         let addDelete = $(this).closest('tr').find('.last-cell').replaceWith(function () {
             return $('<td class="col-1 last-cell"><button type="button" class="btn btn-outline-secondary btn-sm btn-block delete-button">Delete</button></td>').hide().fadeIn(500)
         });
@@ -184,11 +194,13 @@ function checkboxChecked() {
                 function () {
                 getTasklist();
                 }, 500);
-        })
+        }).catch(function () {
+            alert('Checkbox check could not be sent');
+        });
     }
     else {
         console.log('checkbox is unchecked');
-        let priorityLabel = $(this).closest('tr').find('.priority-row').text()
+        let priorityLabel = $(this).closest('tr').find('.priority-row').text();
         
         $.ajax({
             method: 'PUT',
@@ -199,7 +211,9 @@ function checkboxChecked() {
             }
         }).then(function () {
             getTasklist();
-        })
+        }).catch(function () {
+            alert('Checkbox un-check could not be sent');
+        });
     }
 }
 
@@ -216,7 +230,9 @@ function deleteRow() {
             function () {
                 getTasklist();
             }, 800);
-    })
+    }).catch(function () {
+        alert('Row could not be deleted');
+    });
 }
 
 
@@ -226,28 +242,26 @@ function deleteRow() {
 function verifyPriority(task, priority) {
   
     if (task.completed == 'checked') {
-        console.log('box is checked color is being returned');
-        
-        return {color: 'bg-light text-muted'}
+        return {color: 'bg-light text-muted'};
     }
     else if (task.priority == 'Today' || priority == 'Today') {
-        return {color: 'table-danger', rank: 1}
+        return {color: 'table-danger', rank: 1};
     }
     else if (task.priority == 'Tomorrow' || priority == 'Tomorrow') {
-        return {color: 'table-warning', rank: 2}
+        return {color: 'table-warning', rank: 2};
     }
     else if (task.priority == 'Soon' || priority  == 'Soon') {
-        return {color: 'table-success', rank: 3 }
+        return {color: 'table-success', rank: 3 };
     }
     else if (task.priority == 'Eventually' || priority  == 'Eventually') {
-        return {color: 'table-info', rank: 4 }
+        return {color: 'table-info', rank: 4 };
     }
        
 }
 
 function addDeleteButton(task) {
-    let deleteButton = ` center-cell"><button type="button" class="btn btn-outline-secondary btn-sm btn-block delete-button" data-id="${task.id}">Delete</button`
-    let editButton = ` center-cell"><button type="button" class="btn btn-outline-secondary btn-sm btn-block edit-button" data-id="${task.id}" data-toggle="modal" data-target=".bd-example-modal-lg">Edit/Info</button`
+    let deleteButton = ` center-cell"><button type="button" class="btn btn-outline-secondary btn-sm btn-block delete-button" data-id="${task.id}">Delete</button`;
+    let editButton = ` center-cell"><button type="button" class="btn btn-outline-secondary btn-sm btn-block edit-button" data-id="${task.id}" data-toggle="modal" data-target=".bd-example-modal-lg">Edit/Info</button`;
     if (task.completed == 'checked') {
         return deleteButton;
     }
@@ -258,11 +272,11 @@ function addDeleteButton(task) {
 
 function formatDate(task) {
     if (task == '') {
-        return ''
+        return '';
     }
     else {
-        let formattedDate = new Date(task).getMonth() + 1 + '/' + new Date(task).getDate()
-        return formattedDate
+        let formattedDate = new Date(task).getMonth() + 1 + '/' + new Date(task).getDate();
+        return formattedDate;
     }  
 }
 
@@ -274,22 +288,23 @@ function clearForm() {
 
 
 function editRow() {
-    let selectedID= $(this).data().id
+    let selectedID= $(this).data().id;
 
     $.ajax({
         method: 'GET',
         url: '/task'
     }).then(function (response) {
-        // $('#tasklist-body').empty();
         let selectedRowObject;
         response.forEach(function (task, i) {
             if (selectedID == task.id) {
                 selectedRowObject = task;
             }
-        })
+        });
         console.log('selected object', selectedRowObject);
         appendEditForm(selectedRowObject);
-    })
+    }).catch(function () {
+        alert('Task-list could not be received');
+    });
 }
 
 function resetAddModalForm() {
