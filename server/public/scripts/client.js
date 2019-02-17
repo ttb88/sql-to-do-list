@@ -304,7 +304,6 @@ function resetAddModalForm() {
 
 function appendEditForm(selectedRowObject) {
     console.log(selectedRowObject.priority);
-    
     $('.modal-title').text('Edit Existing Task');
     $('#task-input').val(selectedRowObject.task);
     $('#category-dropdown').val(selectedRowObject.category);

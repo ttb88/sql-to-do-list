@@ -1,15 +1,21 @@
+/* ------------------------------------- */
+/* BASIC SETUP */
+/* ------------------------------------- */
+
 body {
     font-family: 'Comfortaa', cursive;
 }
 
-.container-flex {
-    margin: 0 40px;
-}
-
 .jumbotron {
     padding: 5rem 2rem;
-    background-color: #17a2b8;
+    background-color: #17A2D1;
+    margin-bottom: 0;
 }
+
+
+/* ------------------------------------- */
+/* HEADINGS */
+/* ------------------------------------- */
 
 h1 {
     text-align: center;
@@ -22,17 +28,22 @@ h1 {
     color: white;
 }
 
+
+/* ------------------------------------- */
+/* MODAL ADD-NEW-TASK FORM */
+/* ------------------------------------- */
+
 #open-modal-button {
     font-size: 2.2rem;
-    border-color: #e3a011;
-    background-color: #e3a011;
+    border-color: #e3a05c;
+    background-color: #e3a05c;
     margin: 40px auto 0 auto;
 }
 
 #add-task-button {
     font-size: 1.3rem;
-    border-color: #e3a011;
-    background-color: #e3a011;
+    border-color: #e3a05c;
+    background-color: #e3a05c;
 }
 
 .btn-success.focus, 
@@ -43,7 +54,7 @@ h1 {
 .input-group-text {
     padding: .375rem 1.75rem;
     font-size: 1.2rem;
-    background-color: #17a2b8;
+    background-color: #17A2D1;
     color: white;
     border: none;
 }
@@ -66,21 +77,16 @@ form .btn {
 }
 
 
-#submit-button {
-    padding: .375rem 1.75rem;
-
-}
-
-table {
-    margin-top: 40px;
-}
-
-/* #tasklist-body {
-    background-color: #d8dfdf8c;
-} */
+/* ------------------------------------- */
+/* TASK-LIST TABLE */
+/* ------------------------------------- */
 
 .table td:first-child {
     text-align: center;
+} 
+
+.table td:last-child {
+    padding-right: 35px;
 } 
 
 th:first-of-type {
@@ -91,10 +97,6 @@ input[type="checkbox"]{
   width: 20px; 
   height: 20px; 
 }
-
-/* .checked-row {
-    background-color: #575757;
-} */
 
 thead {
     font-size: 1rem;
