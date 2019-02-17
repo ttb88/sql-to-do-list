@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../modules/pool.js');
 
+// will send all current items from "category" table on database ordered alphabetically by "category" field
 router.get('/', (req, res) => {
     pool.query(`SELECT * FROM "category" ORDER BY "category"`)
         .then((result) => {
@@ -13,6 +14,7 @@ router.get('/', (req, res) => {
         })
 })
 
+// will receive new category items from client and insert into database
 router.post('/', (req, res) => {
     pool.query(`INSERT INTO "category" (category) VALUES ($1);`, [req.body.category]).then(() => {
         res.sendStatus(201);
