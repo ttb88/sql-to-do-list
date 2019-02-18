@@ -44,14 +44,15 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form class="was-validated">
                         <div class="form-group">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Task</span>
                                 </div>
                                 <input type="text" class="form-control" id="task-input" placeholder="" aria-label=""
-                                    aria-describedby="basic-addon1">
+                                    aria-describedby="basic-addon1" required>
+                                <div class="invalid-feedback">* required</div>
                             </div>
                         </div>
 
@@ -61,7 +62,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Category</span>
                                     </div>
-                                    <select id="category-dropdown" class="custom-select form-control">
+                                    <select id="category-dropdown" class="custom-select form-control" required>
                                     </select>
                                 </div>
                             </div>
@@ -73,13 +74,14 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Priority</span>
                                     </div>
-                                    <select id="priority-dropdown" class="custom-select form-control">
-                                        <option selected>Choose...</option>
+                                    <select id="priority-dropdown" class="custom-select form-control" required>
+                                        <option selected value="">Choose...</option>
                                         <option data-rank="1" value="Today">Today</option>
                                         <option data-rank="2" value="Tomorrow">Tomorrow</option>
                                         <option data-rank="3" value="Soon">Soon</option>
                                         <option data-rank="4" value="Eventually">Eventually</option>
                                     </select>
+                                    <div class="invalid-feedback">* required</div>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
@@ -107,7 +109,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success btn-lg" id="add-task-button" data-dismiss="modal">Add
+                    <button type="submit" class="btn btn-success btn-lg" id="add-task-button" data-dismiss="modal">Add
                         Task</button>
                 </div>
             </div>

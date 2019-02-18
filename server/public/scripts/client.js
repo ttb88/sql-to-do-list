@@ -2,23 +2,23 @@ $(document).ready(onReady);
 
 function onReady() {
     console.log('jquery is running');
-    
+
     //get current task list and category items from database and display to DOM
     getTasklist();
     getCategoryDropdown();
-   
+
     // new category event listeners
     $('#category-row').on('click', '#add-category-button', addNewCategory);
     $('#category-row').on('change', openNewCategoryInput);
     $('#modal-form').on('click', '#close-new-category-button', closeNewCategoryInput);
-    
+
     // modal form event listeners
     $('#modal-form').on('click', '#add-task-button', submitTask);
     $('#modal-form').on('click', '#update-task-button', submitUpdate);
     $('#close-modal-button').on('click', function () {
         clearForm();
     });
-    
+
     // table event listeners
     $('table').on('click', '.edit-button', editRow);
     $('table').on('click', '.checkbox', checkboxChecked);
@@ -55,7 +55,7 @@ function addNewCategory() {
         }).then(function () {
             closeNewCategoryInput();
         }).catch(function () {
-            alert('New category could not be added');
+            console.log('New category could not be added');
         });
     }
 }
@@ -67,14 +67,17 @@ function getCategoryDropdown() {
         method: 'GET',
         url: '/category'
     }).then(function (response) {
-        $('#category-dropdown').empty();
-        $('#category-dropdown').append(`<option selected id="choose-option">Choose...</option>`);
+        // $('#category-dropdown').empty();
+        $('#category-dropdown').replaceWith(`
+        <select id="category-dropdown" class="custom-select form-control" required>
+        <option selected value="">Choose...</option>`);
         response.forEach(function (category) {
             $('#category-dropdown').append(`<option value="${category.category}">${category.category}</option>`);
         })
         $('#category-dropdown').append(`<option id="display-add-category">ADD NEW</option>`);
+        $('#category-dropdown').after(`<div class="invalid-feedback">* required</div>`);
     }).catch(function () {
-        alert('Category content was not recieved');
+        console.log('Category content was not recieved');
     });
 }
 
@@ -130,25 +133,38 @@ function closeNewCategoryInput() {
 // new task will be added to "task" table on database once "Add Task" button is clicked on DOM
 function submitTask() {
     console.log('submit button clicked');
-    $.ajax({
-        method: 'POST',
-        url: '/task',
-        data: {
-            task: $('#task-input').val(),
-            category: $('#category-dropdown option:selected').text(),
-            priority: $('#priority-dropdown option:selected').text(),
-            priority_id: $('#priority-dropdown option:selected').data().rank,
-            deadline: $('#deadline-input').val(),
-            date_created: currentDate,
-            completed: '',
-            note: $('#note-input').val()
-        }
-    }).then(function () {
-        clearForm();
-        getTasklist();
-    }).catch(function () {
-        alert('New task could not be added');
-    });
+    
+    let categorySelected = $('#category-dropdown option:selected').text();
+    let prioritySelected = $('#priority-dropdown option:selected').text();
+    let taskInput = $('#task-input').val();
+
+    // validate that "Task", "Category" and "Priority" are completed before closing modal and running POST
+    if (taskInput == '' || categorySelected == 'Choose...' || prioritySelected == 'Choose...') {
+        $('.modal-footer').empty().append(`<button type="submit" class="btn btn-success btn-lg" id="add-task-button">Add Task</button>`);
+        $('.modal-footer').empty().append(`<button type="submit" class="btn btn-success btn-lg" id="add-task-button" data-dismiss="modal">Add Task</button>`);
+    }
+ 
+    else {
+        $.ajax({
+            method: 'POST',
+            url: '/task',
+            data: {
+                task: taskInput,
+                category: categorySelected,
+                priority: prioritySelected,
+                priority_id: $('#priority-dropdown option:selected').data().rank,
+                deadline: $('#deadline-input').val(),
+                date_created: currentDate,
+                completed: '',
+                note: $('#note-input').val()
+            }
+        }).then(function () {
+            clearForm();
+            getTasklist();
+        }).catch(function () {
+            console.log('New task could not be added');
+        });
+    } 
 }
 
 
@@ -172,7 +188,7 @@ function submitUpdate() {
         clearForm();
         getTasklist();
     }).catch(function () {
-        alert('Task update could not be completed');
+        console.log('Task update could not be completed');
     });
 }
 
@@ -198,7 +214,7 @@ function getTasklist() {
                 `);
         });
     }).catch(function () {
-        alert('Task-list could not be received');
+        console.log('Task-list could not be received');
     });
 }
 
@@ -227,7 +243,7 @@ function editRow() {
         console.log('selected object', selectedRowObject);
         appendEditForm(selectedRowObject);
     }).catch(function () {
-        alert('Task-list could not be received');
+        console.log('Task-list could not be received');
     });
 }
 
@@ -282,7 +298,7 @@ function checkboxChecked() {
                     getTasklist();
                 }, 500);
         }).catch(function () {
-            alert('Checkbox check could not be sent');
+            console.log('Checkbox check could not be sent');
         });
     }
     else {
@@ -299,7 +315,7 @@ function checkboxChecked() {
         }).then(function () {
             getTasklist();
         }).catch(function () {
-            alert('Checkbox un-check could not be sent');
+            console.log('Checkbox un-check could not be sent');
         });
     }
 }
@@ -331,7 +347,7 @@ function deleteRow() {
                 getTasklist();
             }, 800);
     }).catch(function () {
-        alert('Row could not be deleted');
+        console.log('Row could not be deleted');
     });
 }
 
