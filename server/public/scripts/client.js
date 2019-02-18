@@ -334,21 +334,28 @@ function addDeleteButton(task) {
 }
 
 
-// once "Delete" button is clicked on DOM, selected row will fade out on DOM and be deleted from "task" table on database
+// once "Delete" button is clicked on DOM, if confirmed selected row will fade out on DOM and be deleted from "task" table on database
 function deleteRow() {
     console.log('delete button clicked');
-    $(this).closest('tr').fadeOut(600);
-    $.ajax({
-        method: 'DELETE',
-        url: '/task/' + $(this).data().id
-    }).then(function () {
-        setTimeout(
-            function () {
-                getTasklist();
-            }, 400);
-    }).catch(function () {
-        console.log('Row could not be deleted');
-    });
+
+    let confirmation = confirm('Are you sure you want to delete?');
+
+    if (confirmation == false) {
+        return;
+    } else {
+        $(this).closest('tr').fadeOut(600);
+        $.ajax({
+            method: 'DELETE',
+            url: '/task/' + $(this).data().id
+        }).then(function () {
+            setTimeout(
+                function () {
+                    getTasklist();
+                }, 400);
+        }).catch(function () {
+            console.log('Row could not be deleted');
+        });
+    } 
 }
 
 
