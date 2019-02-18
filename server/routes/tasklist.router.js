@@ -31,7 +31,7 @@ router.post('/', (req, res) => {
 // "priority_id"- (checked="5" / unchecked = [original value])
 router.put('/:id', (req, res) => {
     console.log('/task PUT request was hit');
-    console.log('req.params', req.params);
+    // console.log('req.params', req.params);
     pool.query(`UPDATE "task" SET "completed"=$1, "priority_id"=$2 WHERE "id"=$3;`, [req.body.completed, req.body.priority_id, req.params.id]).then(() => {
         res.sendStatus(204); 
     }).catch((error) => {
@@ -43,7 +43,7 @@ router.put('/:id', (req, res) => {
 // capture all updates from edit form on DOM and update the applicable fields on "task" table in database 
 router.put('/update/:id', (req, res) => {
     console.log('/task PUT request was hit');
-    console.log('req.params', req.params);
+    // console.log('req.params', req.params);
     pool.query(`UPDATE "task" SET "task"=$1, "category"=$2, "priority"=$3, "priority_id"=$4, "deadline"=$5, "note"=$6 WHERE "id"=$7;`, [req.body.task, req.body.category, req.body.priority, req.body.priority_id, req.body.deadline, req.body.note, req.params.id]).then(() => {
         res.sendStatus(204); 
     }).catch((error) => {
@@ -54,7 +54,7 @@ router.put('/update/:id', (req, res) => {
 
 // delete selected row on DOM from database
 router.delete('/:id', (req, res) => {
-    console.log('req.params', req.params);
+    // console.log('req.params', req.params);
     pool.query(`DELETE FROM "task" WHERE "id"=$1;`, [req.params.id]).then(() => {
         res.sendStatus(204); 
     }).catch((error) => {

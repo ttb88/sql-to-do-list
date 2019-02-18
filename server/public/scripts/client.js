@@ -337,7 +337,7 @@ function addDeleteButton(task) {
 // once "Delete" button is clicked on DOM, selected row will fade out on DOM and be deleted from "task" table on database
 function deleteRow() {
     console.log('delete button clicked');
-    $(this).closest('tr').fadeOut(1000);
+    $(this).closest('tr').fadeOut(600);
     $.ajax({
         method: 'DELETE',
         url: '/task/' + $(this).data().id
@@ -345,7 +345,7 @@ function deleteRow() {
         setTimeout(
             function () {
                 getTasklist();
-            }, 800);
+            }, 400);
     }).catch(function () {
         console.log('Row could not be deleted');
     });
