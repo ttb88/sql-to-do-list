@@ -17,7 +17,6 @@ router.get('/', (req, res) => {
 // will receive new task content and insert into the applicable fields on "task" table in database
 router.post('/', (req, res) => {
     console.log('task POST route was hit', req.body);
-    
     pool.query(`INSERT INTO "task" (task, category, priority, priority_id, deadline, date_created, completed, note) VALUES ($1,$2,$3,$4,$5,$6,$7,$8);`, [req.body.task, req.body.category, req.body.priority, req.body.priority_id, req.body.deadline, req.body.date_created, req.body.completed, req.body.note]).then(() => {
         res.sendStatus(201);
     }).catch((error) => {
