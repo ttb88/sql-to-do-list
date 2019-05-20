@@ -394,7 +394,7 @@ function formatDate(task) {
         return '';
     }
     else {
-        let formattedDate = new Date(task).getMonth() + 1 + '/' + new Date(task).getDate();
+        let formattedDate = new Date(task).getUTCMonth() + 1 + '/' + new Date(task).getUTCDate();
         return formattedDate;
     }
 }
